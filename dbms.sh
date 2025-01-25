@@ -92,7 +92,7 @@ connect_to_database() {
                             ;;
                         "select from table")
                             read -p "Please enter the Table to select : " table
-                            select secopt in "full_table" "by_column" "by_row"; do 
+                            select secopt in "full_table" "by_column" "by_row" "exit"; do 
                                 case $secopt in
                                     "full_table")
                                         cat "$DB_Dir/$name/$table"
@@ -128,6 +128,10 @@ connect_to_database() {
                                         else
                                             tail -n +2 "$DB_Dir/$name/$table" | awk -F',' -v idx=$((column_index+1))  '{print $idx}'
                                         fi
+                                        ;;
+                                    "exit")
+                                       echo "Back to Table Options"
+                                        break                           
                                         ;;
                                     *)
                                         echo "Option not Valid"
@@ -186,7 +190,11 @@ connect_to_database() {
                                                 'BEGIN {OFS=","} $0 !~ value' \
                                                 "$DB_Dir/$name/$table" > "$DB_Dir/$name/$table.tmp" && \
                                             mv "$DB_Dir/$name/$table.tmp" "$DB_Dir/$name/$table"
-                                            ;;    
+                                            ;;
+                                        "exit")
+                                       echo "Back to Table Options"
+                                        break                           
+                                        ;;
                                         *)
                                             echo "Invalid option."
                                             ;;
@@ -219,10 +227,9 @@ connect_to_database() {
                                 echo "Value '$old_value' replaced with '$new_value' in table '$table'."
                             fi
                             ;;
-                        "exit")
-                            echo "Exiting database '$name'."
-                            cd "$DB_Dir"
-                            break 
+                            "exit")
+                            echo "Exiting..."
+                            exit                           
                             ;;
                         *)
                             echo "Invalid option."
